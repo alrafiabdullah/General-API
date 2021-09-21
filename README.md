@@ -38,6 +38,6 @@
 
 ## API Key
 
-To get a temporary API key, contact [Abdullah Alrafi](https://abdullahalrafi.com/).
+To get a temporary API key, contact [Abdullah Al Rafi](https://abdullahalrafi.com/).
 
 ##
