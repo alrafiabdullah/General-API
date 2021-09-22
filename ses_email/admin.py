@@ -11,7 +11,7 @@ admin.site.index_title = 'General API Models'
 
 class VerificationCodeAdmin(admin.ModelAdmin):
     empty_value_display = 'None'
-    list_display = ('code', 'validity', 'created_at',)
+    list_display = ('code', 'validity', 'rate_limit', 'created_at',)
     list_filter = ('validity', 'created_at',)
 
 

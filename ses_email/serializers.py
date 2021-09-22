@@ -2,6 +2,6 @@ from rest_framework import serializers
 
 
 class EmailSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
     email = serializers.EmailField()
+    subject = serializers.CharField(max_length=100)
     message = serializers.CharField(max_length=999)
