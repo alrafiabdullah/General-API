@@ -14,6 +14,7 @@ def random_string():
 class VerificationCode(models.Model):
     code = models.CharField(max_length=14, default=random_string)
     validity = models.BooleanField(default=True)
+    rate_limit = models.PositiveSmallIntegerField(default=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
