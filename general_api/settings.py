@@ -33,7 +33,7 @@ if os.path.exists("secrets.json"):
 # SECURITY WARNING: don't run with debug turned on in production!
 if socket.gethostname() == 'pop':
     DEBUG = True
-    ALLOWED_HOSTS = ['127.0.0.1']
+    ALLOWED_HOSTS = ['*']
 else:
     DEBUG = False
     ALLOWED_HOSTS = ['*']
@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
+    'ses_email.middleware.XForwardedForMiddleware',
 ]
 
 ROOT_URLCONF = 'general_api.urls'
