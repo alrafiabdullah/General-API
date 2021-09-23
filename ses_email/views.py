@@ -17,15 +17,6 @@ class SesEmail(APIView):
     description = "Send an email to a user"
     serializer_class = EmailSerializer
 
-    def get(self, request):
-        usage = get_usage(request, group="email_ratelimit", fn=self.get, key="ip",
-                          rate="5/h", method="GET", increment=True)
-
-        if usage["should_limit"]:
-            return Response({"status": "Rate limit exceeded", "current_limit": usage["limit"], "total_sent": usage["count"], "time_left": usage["time_left"]}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-
-        return Response({"status": "Email Service Up & Running!"}, status=status.HTTP_200_OK)
-
     def post(self, request):
         try:
             api_key = request.data['api_key']
