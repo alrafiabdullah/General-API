@@ -1,3 +1,4 @@
+from time import daylight
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,24 +18,10 @@ class SesEmail(APIView):
     description = "Send an email to a user"
     serializer_class = EmailSerializer
 
-    def get(self, request):
-        usage = get_usage(request, group="email_ratelimit", fn=self.get, key="ip",
-                          rate="5/h", method="GET", increment=True)
-
-        if usage["should_limit"]:
-            return Response({"status": "Rate limit exceeded", "current_limit": usage["limit"], "total_sent": usage["count"], "time_left": usage["time_left"]}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-
-        return Response({"status": "Email Service Up & Running!"}, status=status.HTTP_200_OK)
-
     def post(self, request):
-        try:
-            api_key = request.data['api_key']
-            if not VerificationCode.objects.filter(code=api_key, validity=True):
-                return Response({"error": f"Invalid API Key, {api_key}\\nEither expired or does not exist!"}, status=status.HTTP_400_BAD_REQUEST)
-            user_rate_limit = VerificationCode.objects.get(
-                code=api_key).rate_limit
-        except:
-            return Response({"status": "Missing API Key"}, status=status.HTTP_400_BAD_REQUEST)
+        api_key = request.META.get('HTTP_API_KEY')
+        user_rate_limit = VerificationCode.objects.get(
+            code=api_key).rate_limit
 
         usage = get_usage(request, group="email_ratelimit", fn=self.post, key="ip",
                           rate=f"{user_rate_limit}/h", method="POST", increment=True)
@@ -45,13 +32,30 @@ class SesEmail(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        try:
+            emails = request.data["email"].replace(
+                " ", "").replace('""', '').replace("''", "").lower().split(",")
+
+            if len(emails) > 5:
+                return Response({"status": f"Limit 5 emails, given {len(emails)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+            for email in emails:
+                if "@" in email:
+                    email_last = email.split("@")[1]
+                    if not "." in email_last:
+                        return Response({"status": f"Invalid email address, {email}"}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({"status": f"Invalid email address, {email}"}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({"status": "Missing email address"}, status=status.HTTP_400_BAD_REQUEST)
+
         email = EmailMessage(
             subject=serializer.validated_data['subject'],
             body=serializer.validated_data["message"],
             from_email=settings.EMAIL_FROM,
-            to=[serializer.validated_data["email"]],
+            to=emails,
             bcc=[settings.EMAIL_BCC],
         )
 
-        email.send()
-        return Response({"message": f"Email sent to {serializer.validated_data['email']}"}, status=status.HTTP_200_OK)
+        # email.send()
+        return Response({"message": f"Email sent to {request.data['email']}"}, status=status.HTTP_200_OK)
