@@ -19,14 +19,9 @@ class SesEmail(APIView):
     serializer_class = EmailSerializer
 
     def post(self, request):
-        try:
-            api_key = request.data['api_key']
-            if not VerificationCode.objects.filter(code=api_key, validity=True):
-                return Response({"error": f"Invalid API Key, {api_key}\\nEither expired or does not exist!"}, status=status.HTTP_400_BAD_REQUEST)
-            user_rate_limit = VerificationCode.objects.get(
-                code=api_key).rate_limit
-        except:
-            return Response({"status": "Missing API Key"}, status=status.HTTP_400_BAD_REQUEST)
+        api_key = request.META.get('HTTP_API_KEY')
+        user_rate_limit = VerificationCode.objects.get(
+            code=api_key).rate_limit
 
         usage = get_usage(request, group="email_ratelimit", fn=self.post, key="ip",
                           rate=f"{user_rate_limit}/h", method="POST", increment=True)
@@ -62,5 +57,5 @@ class SesEmail(APIView):
             bcc=[settings.EMAIL_BCC],
         )
 
-        email.send()
+        # email.send()
         return Response({"message": f"Email sent to {request.data['email']}"}, status=status.HTTP_200_OK)
