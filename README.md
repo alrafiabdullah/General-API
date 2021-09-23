@@ -33,7 +33,7 @@
 
 - `https://general.abdullahalrafi.com/` || `http://127.0.0.1:8000/` - Base URL
 - `api/v1/email/send` - POST - Send email
-  - `api_key`: API key (asdfhdkjsfgk - string) - use the key you are provided or create one then put it in the header.
+  - `API-KEY`: API key (asdfhdkjsfgk - string) - use the key you are provided or create one then put it in the header.
     - `API-KEY`: `asdfhdkjsfgk`
   - `email`: Email address (example@example.com - string) - Comma seprated up to 5 emails
     - `email`: `first@email.com,second@email.com,third@email.com,fourth@email.com,fifth@email.com`
