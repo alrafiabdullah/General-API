@@ -18,7 +18,6 @@ class SesEmail(APIView):
     serializer_class = EmailSerializer
 
     def get(self, request):
-        return Response({"message": request.META['REMOTE_ADDR']}, status=status.HTTP_200_OK)
         usage = get_usage(request, group="email_ratelimit", fn=self.get, key="ip",
                           rate="5/h", method="GET", increment=True)
 
