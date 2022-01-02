@@ -160,10 +160,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_FROM = secrets['EMAIL_FROM']
 EMAIL_BCC = secrets['EMAIL_BCC']
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'ses_email.authentication.APIKEYAuthentication',
-    )
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'ses_email.authentication.APIKEYAuthentication',
+#     )
+# }
 
 CORS_ALLOW_ALL_ORIGINS = True

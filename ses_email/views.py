@@ -19,7 +19,7 @@ class SesEmail(APIView):
     serializer_class = EmailSerializer
 
     def post(self, request):
-        api_key = request.META.get('HTTP_API_KEY')
+        api_key = request.data["api_key"]  # META.get('HTTP_API_KEY')
         user_rate_limit = VerificationCode.objects.get(
             code=api_key).rate_limit
 
