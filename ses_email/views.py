@@ -57,5 +57,5 @@ class SesEmail(APIView):
             bcc=[settings.EMAIL_BCC],
         )
 
-        email.send()
+        # email.send()
         return Response({"message": f"Email sent to {request.data['email']}"}, status=status.HTTP_200_OK)
